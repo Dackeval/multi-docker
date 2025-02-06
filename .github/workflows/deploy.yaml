@@ -4,40 +4,34 @@ on:
   push:
     branches:
       - main  # Change this if your default branch is 'master'
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      # 🔹 Correct Docker Login Step (Uses docker/login-action)
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 🔹 Build and Test React App
       - name: Build and Test React App
         run: |
-          docker build -t rallycoding/react-test -f ./client/Dockerfile.dev ./client
-          docker run --rm -e CI=true rallycoding/react-test npm test
+          docker build -t dackevall/react-test -f ./client/Dockerfile.dev ./client
+          docker run -e CI=true dackevall/react-test npm test
 
-      # 🔹 Build Production Images
       - name: Build Production Images
         run: |
-          docker build -t rallycoding/multi-client ./client
-          docker build -t rallycoding/multi-nginx ./nginx
-          docker build -t rallycoding/multi-server ./server
-          docker build -t rallycoding/multi-worker ./worker
+          docker build -t dackevall/multi-client ./client
+          docker build -t dackevall/multi-nginx ./nginx
+          docker build -t dackevall/multi-server ./server
+          docker build -t dackevall/multi-worker ./worker
 
-      # 🔹 Push Images to Docker Hub
       - name: Push Images to Docker Hub
         run: |
-          docker push rallycoding/multi-client
-          docker push rallycoding/multi-nginx
-          docker push rallycoding/multi-server
-          docker push rallycoding/multi-worker
+          docker push dackevall/multi-client
+          docker push dackevall/multi-nginx
+          docker push dackevall/multi-server
+          docker push dackevall/multi-worker
+
